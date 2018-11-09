@@ -29,7 +29,7 @@
       <div class="collapse" :id="'id'+post.id">
         <div class="card card-body">
           <iframe  width="100%" height="" frameborder="0" style="border:0"
-          :src="'https://www.google.com/maps/embed/v1/place?q=' + this.location.latitude + ',+' + this.location.longitude + '&key=AIzaSyDZqUYUfqjNjqeV5s5URZIDlTKSXvQp_bs'" allowfullscreen></iframe>
+          :src="'https://www.google.com/maps/embed/v1/place?q=' + this.location.latitude + ',+' + this.location.longitude + '&key='" allowfullscreen></iframe>
         </div>
       </div>
     </div>

@@ -47709,7 +47709,7 @@ var render = function() {
                         this.location.latitude +
                         ",+" +
                         this.location.longitude +
-                        "&key=AIzaSyDZqUYUfqjNjqeV5s5URZIDlTKSXvQp_bs",
+                        "&key=",
                       allowfullscreen: ""
                     }
                   })
