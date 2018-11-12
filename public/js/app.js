@@ -621,7 +621,7 @@ module.exports = function normalizeComponent (
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* WEBPACK VAR INJECTION */(function(global) {/**!
  * @fileOverview Kickass library to create and place poppers near their reference elements.
- * @version 1.14.4
+ * @version 1.14.5
  * @license
  * Copyright (c) 2016 Federico Zivolo and contributors
  *
@@ -718,7 +718,8 @@ function getStyleComputedProperty(element, property) {
     return [];
   }
   // NOTE: 1 DOM access here
-  var css = getComputedStyle(element, null);
+  var window = element.ownerDocument.defaultView;
+  var css = window.getComputedStyle(element, null);
   return property ? css[property] : css;
 }
 
@@ -806,7 +807,7 @@ function getOffsetParent(element) {
   var noOffsetParent = isIE(10) ? document.body : null;
 
   // NOTE: 1 DOM access here
-  var offsetParent = element.offsetParent;
+  var offsetParent = element.offsetParent || null;
   // Skip hidden elements which don't have an offsetParent
   while (offsetParent === noOffsetParent && element.nextElementSibling) {
     offsetParent = (element = element.nextElementSibling).offsetParent;
@@ -818,9 +819,9 @@ function getOffsetParent(element) {
     return element ? element.ownerDocument.documentElement : document.documentElement;
   }
 
-  // .offsetParent will return the closest TD or TABLE in case
+  // .offsetParent will return the closest TH, TD or TABLE in case
   // no offsetParent is present, I hate this job...
-  if (['TD', 'TABLE'].indexOf(offsetParent.nodeName) !== -1 && getStyleComputedProperty(offsetParent, 'position') === 'static') {
+  if (['TH', 'TD', 'TABLE'].indexOf(offsetParent.nodeName) !== -1 && getStyleComputedProperty(offsetParent, 'position') === 'static') {
     return getOffsetParent(offsetParent);
   }
 
@@ -1368,7 +1369,8 @@ function getReferenceOffsets(state, popper, reference) {
  * @returns {Object} object containing width and height properties
  */
 function getOuterSizes(element) {
-  var styles = getComputedStyle(element);
+  var window = element.ownerDocument.defaultView;
+  var styles = window.getComputedStyle(element);
   var x = parseFloat(styles.marginTop) + parseFloat(styles.marginBottom);
   var y = parseFloat(styles.marginLeft) + parseFloat(styles.marginRight);
   var result = {
@@ -47373,7 +47375,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       posts: [],
       authuser: window.Laravel.user,
       authadmin: window.Laravel.admin,
-      last_id: ''
+      post_qty_limit: 3
     };
   },
 
@@ -47383,8 +47385,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
       axios.get('api/posts/' + last_id).then(function (response) {
         _this.posts = response.data;
-        // this.posts.push(response.data);
-        // console.log(this.posts);
       });
     },
     handleScroll: function handleScroll(e) {
@@ -47393,9 +47393,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       var height = d.offsetHeight;
       // console.log('offset = ' + offset);console.log('height = ' + height);
       if (offset === height) {
-        console.log('At the bottom');
-        // this.last_id=this.posts[0].id;
-        // console.log(this.posts[0].id);
+        console.log('bottom-end');
+        this.post_qty_limit++;
+        this.getPosts(this.post_qty_limit);
+        // console.log(this.posts[this.posts.length-1]);
       }
     },
     pushPost: function pushPost(post) {
@@ -47405,14 +47406,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.posts.splice(index, 1);
     }
   },
+
   mounted: function mounted() {
     var _this2 = this;
 
-    this.getPosts(this.last_id);
+    this.getPosts(this.post_qty_limit);
     setInterval(function () {
-      _this2.getPosts(_this2.last_id);
+      _this2.getPosts(_this2.post_qty_limit);
     }, 9000);
-
     window.addEventListener('scroll', this.handleScroll);
   }
 });
@@ -47553,6 +47554,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['post'],
@@ -47561,7 +47563,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       likes: this.post.likes,
       authuser: window.Laravel.user,
       authadmin: window.Laravel.admin,
-      location: JSON.parse(this.post.location)
+      location: JSON.parse(this.post.location),
+      g_maps_key: "AIzaSyDZqUYUfqjNjqeV5s5URZIDlTKSXvQp_bs"
     };
   },
 
@@ -47582,7 +47585,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       var match = content.match(regExp);
       if (match && match[7].length == 11) {
         var src = "https://www.youtube.com/embed/" + match[7];
-        return '<iframe width="100%" height="200px" src=' + src + ' frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
+        return '<div class="iframe_container"><iframe src=' + src + ' frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>';
       } else {
         var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
         var text1 = content.replace(exp, '<a target="_blank" href="$1">$1</a>');
@@ -47614,7 +47617,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       });
     }
   },
-  mounted: function mounted() {}
+  mounted: function mounted() {
+    console.log(this.g_maps_key);
+  }
 });
 
 /***/ }),
@@ -47709,7 +47714,8 @@ var render = function() {
                         this.location.latitude +
                         ",+" +
                         this.location.longitude +
-                        "&key=",
+                        "&key=" +
+                        _vm.g_maps_key,
                       allowfullscreen: ""
                     }
                   })

@@ -126,3 +126,21 @@
   position:fixed;
   z-index: 100;
 }
+
+
+
+.iframe_container{
+  position:relative;
+  padding-top:56.25%;
+  /* display: flex; */
+  /* justify-content: center; */
+}
+.iframe_container iframe{
+    position:absolute;
+    top:0;
+    left:0;
+    width:90%;
+    height:90%;
+    margin-left: 5%;
+
+  }

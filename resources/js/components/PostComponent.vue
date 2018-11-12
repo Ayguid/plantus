@@ -29,13 +29,14 @@
       <div class="collapse" :id="'id'+post.id">
         <div class="card card-body">
           <iframe  width="100%" height="" frameborder="0" style="border:0"
-          :src="'https://www.google.com/maps/embed/v1/place?q=' + this.location.latitude + ',+' + this.location.longitude + '&key='" allowfullscreen></iframe>
+          :src="'https://www.google.com/maps/embed/v1/place?q=' + this.location.latitude + ',+' + this.location.longitude + '&key='+g_maps_key" allowfullscreen></iframe>
         </div>
       </div>
     </div>
 
 
     <button  v-if="authuser !== null && authuser.id == post.user_id " @click="onClickDelete(post.id)" type="button" name="button">Delete My post</button>
+    
     <br>
 
   </div>
@@ -51,6 +52,7 @@ export default {
       authuser:window.Laravel.user,
       authadmin:window.Laravel.admin,
       location: JSON.parse(this.post.location),
+      g_maps_key:process.env.MIX_GOOGLE_MAPS_KEY,
     }
   },
   methods: {
@@ -68,7 +70,7 @@ export default {
       var match = content.match(regExp);
       if ( match && match[7].length == 11 ){
         var src = "https://www.youtube.com/embed/" + match[7];
-        return '<iframe width="100%" height="200px" src='+ src +' frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
+        return '<div class="iframe_container"><iframe src='+ src +' frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>';
       }
       else
       {
@@ -101,7 +103,7 @@ export default {
     },
   },
   mounted(){
-
+    console.log(this.g_maps_key);
   },
 }
 </script>

@@ -20,7 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 
 
-Route::get('/posts/{last_id?}', 'PostController@indexActivePosts');
+Route::get('/posts/{limit?}', 'PostController@indexActivePosts');
 Route::post('/postlikes/{id?}', 'PostLikeController@likePost');
 Route::post('/upload', 'PostController@store');
 Route::post('/posts/destroy/{id}', 'PostController@destroy');

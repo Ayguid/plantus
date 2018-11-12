@@ -26,41 +26,40 @@ export default {
       posts: [],
       authuser:window.Laravel.user,
       authadmin:window.Laravel.admin,
-      last_id:'',
+      post_qty_limit:3,
     }
   },
   methods: {
-    getPosts: function(last_id) {
+    getPosts(last_id) {
       axios.get('api/posts/'+last_id).then((response) => {
         this.posts = response.data;
-        // this.posts.push(response.data);
-        // console.log(this.posts);
       });
     },
-    handleScroll: function(e){
+    handleScroll(e){
       var d = document.documentElement;
       var offset = d.scrollTop + window.innerHeight;
       var height = d.offsetHeight;
       // console.log('offset = ' + offset);console.log('height = ' + height);
       if (offset === height) {
-        console.log('At the bottom');
-        // this.last_id=this.posts[0].id;
-        // console.log(this.posts[0].id);
+        console.log('bottom-end');
+        this.post_qty_limit++;
+        this.getPosts(this.post_qty_limit);
+        // console.log(this.posts[this.posts.length-1]);
       }
     },
-    pushPost: function(post){
+    pushPost(post){
       this.posts.unshift(post);
     },
-    popPost: function(index){
+    popPost(index){
       this.posts.splice(index, 1);
     },
   },
-    mounted(){
-    this.getPosts(this.last_id);
-    setInterval(()=>{
-      this.getPosts(this.last_id);
-    },9000);
 
+    mounted(){
+    this.getPosts(this.post_qty_limit);
+    setInterval(()=>{
+      this.getPosts(this.post_qty_limit);
+    },9000);
     window.addEventListener('scroll', this.handleScroll);
 
   },
