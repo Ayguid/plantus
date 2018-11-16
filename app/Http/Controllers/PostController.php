@@ -23,7 +23,7 @@ class PostController extends Controller
   public static function indexActivePosts($limit)
   {
     // $posts=Post::where('is_active', true)->where('id','>=', $last_id)->with('images', 'user', 'likes')->take(2)->orderBy("created_at", "desc")->get();
-    $posts=Post::where('is_active', true)->with('images', 'user', 'likes')->take($limit)->orderBy("created_at", "desc")->get();
+    $posts=Post::where('is_active', true)->with('images', 'user', 'likes', 'category')->take($limit)->orderBy("created_at", "desc")->get();
     return $posts;
   }
 

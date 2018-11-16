@@ -33,10 +33,10 @@
         </div>
       </div>
     </div>
-
-
+    <p>{{post.category.category_description}}</p>
+    <!-- {{category}} -->
     <button  v-if="authuser !== null && authuser.id == post.user_id " @click="onClickDelete(post.id)" type="button" name="button">Delete My post</button>
-    
+
     <br>
 
   </div>
@@ -103,7 +103,7 @@ export default {
     },
   },
   mounted(){
-    console.log(this.g_maps_key);
+
   },
 }
 </script>

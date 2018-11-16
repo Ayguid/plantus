@@ -20,6 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 
 
+Route::get('/categories', 'Post_CategoriesController@indexCategories');
 Route::get('/posts/{limit?}', 'PostController@indexActivePosts');
 Route::post('/postlikes/{id?}', 'PostLikeController@likePost');
 Route::post('/upload', 'PostController@store');

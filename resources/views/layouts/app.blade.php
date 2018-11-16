@@ -99,5 +99,7 @@
     <script rel="subresource" src="{{ asset('js/plankFormDisplay.js') }}" defer></script>
     <script rel="subresource" src="{{ asset('js/logIn.js') }}" defer></script>
     <script rel="subresource" src="{{ asset('js/backTotop.js') }}" defer></script>
+    {{-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> --}}
+
 </body>
 </html>

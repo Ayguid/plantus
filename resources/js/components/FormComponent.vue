@@ -8,11 +8,16 @@
       <form action="/" @submit="formSubmit" enctype="multipart/form-data">
 
         <div class="form-group">
-          <textarea rows="4" id="content" class="form-control" type="text" v-model="content"  name="content"  placeholder="Post Something" required></textarea>
+          <textarea rows="4" id="content" class="form-control" type="text"   name="content"  placeholder="Post Something" required></textarea>
         </div>
         <div class="form-group">
           <input id="has_image"class="form-control-file" v-on:change="onImageChange" type="file" placeholder="Something cool" multiple>
         </div>
+
+        <select class="" name="post_category_id">
+          <option v-for="category in categories"
+          :value="category.id" >{{category.category_description}}</option>
+        </select>
 
         <!-- Mejorar start-->
         <input id="location" type="text" name="location" v-model="JSON.stringify(location)" hidden>
@@ -37,8 +42,10 @@ export default {
 
   data(){
     return  {
-      content:'',
-      success: '',
+      // success: '',
+      categories:[],
+      // content:'',
+      // category:'',
       has_image: '',
       location:'',
       authuser:window.Laravel.user,
@@ -48,7 +55,11 @@ export default {
 
 
   methods: {
-
+    getCategories() {
+      axios.get('api/categories').then((response) => {
+        this.categories = response.data;
+      });
+    },
     onImageChange(e){
       if (parseInt(e.target.files.length) > 3){
         alert("You are only allowed to upload a maximum of 3 files");
@@ -61,7 +72,7 @@ export default {
       e.preventDefault();
       var currentObj = this;
       const config = {
-        headers: { 'content-type': 'multipart/form-data' }
+        headers: {'content-type': 'multipart/form-data'}
       }
       var formData = new FormData(e.target);
       for( var i = 0; i < this.has_image.length; i++ ){
@@ -81,7 +92,6 @@ export default {
         }
       })
       .catch(function (error) {
-        // console.log(error);
         currentObj.output = error;
       });
     },
@@ -100,10 +110,9 @@ export default {
   },
 
 
-
-
   mounted(){
     this.getLocation();
+    this.getCategories();
   }
 
 }
