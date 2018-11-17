@@ -21,7 +21,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 
 Route::get('/categories', 'Post_CategoriesController@indexCategories');
-Route::get('/posts/{limit?}', 'PostController@indexActivePosts');
+Route::get('/posts/{limit}/{category?}/{userId?}', 'PostController@indexActivePosts');
 Route::post('/postlikes/{id?}', 'PostLikeController@likePost');
 Route::post('/upload', 'PostController@store');
 Route::post('/posts/destroy/{id}', 'PostController@destroy');
+Route::post('/user', 'ProfileController@edit');

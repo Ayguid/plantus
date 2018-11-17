@@ -20,11 +20,27 @@ class PostController extends Controller
       $this->middleware('auth:api',  ['except' => ['indexActivePosts']]);
   }
 
-  public static function indexActivePosts($limit)
+  public static function indexActivePosts($limit, $category = NULL, $userId = NULL)
   {
-    // $posts=Post::where('is_active', true)->where('id','>=', $last_id)->with('images', 'user', 'likes')->take(2)->orderBy("created_at", "desc")->get();
+    // if ($userId !== null) {
+    //   if ($category !== null) {
+    //    return $posts=Post::where('is_active', true)->where('user_id', $userId)->where('post_category_id', $category)->with('images', 'user', 'likes', 'category')->take($limit)->orderBy("created_at", "desc")->get();
+    //   }
+    //   else {
+    //     // code...
+    //   return $posts=Post::where('is_active', true)->where('user_id', $userId)->with('images', 'user', 'likes', 'category')->take($limit)->orderBy("created_at", "desc")->get();
+    // }
+    // }
+
+    if ($category !== null) {
+    $posts=Post::where('is_active', true)->where('post_category_id', $category)->with('images', 'user', 'likes', 'category')->take($limit)->orderBy("created_at", "desc")->get();
+    }else {
     $posts=Post::where('is_active', true)->with('images', 'user', 'likes', 'category')->take($limit)->orderBy("created_at", "desc")->get();
+    }
     return $posts;
+
+
+
   }
 
 
@@ -69,7 +85,7 @@ class PostController extends Controller
         }
         if ($save)
         {
-          return  response()->json(['success' => $post::with('images', 'user', 'likes')->find($post->id), 200]);
+          return  response()->json(['success' => $post::with('images', 'user', 'likes', 'category')->find($post->id), 200]);
         }
       }
     });

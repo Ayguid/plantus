@@ -1,36 +1,40 @@
 <template>
   <div v-if="authuser !== null" class="">
 
+
+
+
     <div class="post_button">
       <button id="post_button" type="button" name="button">PLANK IT!!</button>
     </div>
+
+
     <div id="post_input" class="card post_input">
+
       <form action="/" @submit="formSubmit" enctype="multipart/form-data">
 
         <div class="form-group">
-          <textarea rows="4" id="content" class="form-control" type="text"   name="content"  placeholder="Post Something" required></textarea>
+          <textarea rows="4" id="content" class="form-control" type="text"  name="content"  placeholder="Post Something" required></textarea>
         </div>
         <div class="form-group">
           <input id="has_image"class="form-control-file" v-on:change="onImageChange" type="file" placeholder="Something cool" multiple>
         </div>
 
         <select class="" name="post_category_id">
+          <option selected value="">Elegi cat si queres</option>
           <option v-for="category in categories"
           :value="category.id" >{{category.category_description}}</option>
         </select>
 
-        <!-- Mejorar start-->
-        <input id="location" type="text" name="location" v-model="JSON.stringify(location)" hidden>
-        <!-- Mejorar end-->
-
         <button id="submitPost"  type="submit" class="btn btn-primary">Submit</button>
+
       </form>
 
 
     </div>
-
-
     <br>
+
+
 
 
 
@@ -42,10 +46,9 @@ export default {
 
   data(){
     return  {
-      // success: '',
+      success:'',
       categories:[],
-      // content:'',
-      // category:'',
+      content:'',
       has_image: '',
       location:'',
       authuser:window.Laravel.user,
@@ -75,13 +78,13 @@ export default {
         headers: {'content-type': 'multipart/form-data'}
       }
       var formData = new FormData(e.target);
+      formData.append('location', currentObj.location);
       for( var i = 0; i < this.has_image.length; i++ ){
         var files = this.has_image[i];
         formData.append('has_image[' + i + ']', files);
       }
       axios.post('api/upload', formData, config)
       .then(function (response) {
-        // console.log(response);
         if (response.data.success) {
           var post = response.data.success;
           currentObj.$emit('push-post', post);
@@ -100,12 +103,15 @@ export default {
         navigator.geolocation.getCurrentPosition(this.returnPosition);
         // navigator.geolocation.watchPosition(this.returnPosition);
       }
+      else{
+        console.log('location-error');
+      }
     },
     returnPosition(position) {
-      this.location = {
+      this.location = JSON.stringify({
         latitude:position.coords.latitude,
         longitude:position.coords.longitude
-      }
+      });
     },
   },
 

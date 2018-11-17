@@ -20,6 +20,7 @@ Vue.component('feed-component', require('./components/FeedComponent.vue'));
 Vue.component('post-component', require('./components/PostComponent.vue'));
 Vue.component('form-component', require('./components/FormComponent.vue'));
 Vue.component('categoriesmenu-component', require('./components/CategoriesMenuComponent.vue'));
+Vue.component('userprofile-component', require('./components/UserProfileComponent.vue'));
 // Vue.component('posts-component', require('./components/PostsComponent.vue'));
 
 const app = new Vue({

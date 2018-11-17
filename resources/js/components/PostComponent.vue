@@ -33,7 +33,8 @@
         </div>
       </div>
     </div>
-    <p>{{post.category.category_description}}</p>
+    <p v-if="post.category">{{post.category.category_description}}</p>
+    <p v-else>Has no Cat!</p>
     <!-- {{category}} -->
     <button  v-if="authuser !== null && authuser.id == post.user_id " @click="onClickDelete(post.id)" type="button" name="button">Delete My post</button>
 

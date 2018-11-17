@@ -621,7 +621,7 @@ module.exports = defaults;
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* WEBPACK VAR INJECTION */(function(global) {/**!
  * @fileOverview Kickass library to create and place poppers near their reference elements.
- * @version 1.14.5
+ * @version 1.14.4
  * @license
  * Copyright (c) 2016 Federico Zivolo and contributors
  *
@@ -718,8 +718,7 @@ function getStyleComputedProperty(element, property) {
     return [];
   }
   // NOTE: 1 DOM access here
-  var window = element.ownerDocument.defaultView;
-  var css = window.getComputedStyle(element, null);
+  var css = getComputedStyle(element, null);
   return property ? css[property] : css;
 }
 
@@ -807,7 +806,7 @@ function getOffsetParent(element) {
   var noOffsetParent = isIE(10) ? document.body : null;
 
   // NOTE: 1 DOM access here
-  var offsetParent = element.offsetParent || null;
+  var offsetParent = element.offsetParent;
   // Skip hidden elements which don't have an offsetParent
   while (offsetParent === noOffsetParent && element.nextElementSibling) {
     offsetParent = (element = element.nextElementSibling).offsetParent;
@@ -819,9 +818,9 @@ function getOffsetParent(element) {
     return element ? element.ownerDocument.documentElement : document.documentElement;
   }
 
-  // .offsetParent will return the closest TH, TD or TABLE in case
+  // .offsetParent will return the closest TD or TABLE in case
   // no offsetParent is present, I hate this job...
-  if (['TH', 'TD', 'TABLE'].indexOf(offsetParent.nodeName) !== -1 && getStyleComputedProperty(offsetParent, 'position') === 'static') {
+  if (['TD', 'TABLE'].indexOf(offsetParent.nodeName) !== -1 && getStyleComputedProperty(offsetParent, 'position') === 'static') {
     return getOffsetParent(offsetParent);
   }
 
@@ -1369,8 +1368,7 @@ function getReferenceOffsets(state, popper, reference) {
  * @returns {Object} object containing width and height properties
  */
 function getOuterSizes(element) {
-  var window = element.ownerDocument.defaultView;
-  var styles = window.getComputedStyle(element);
+  var styles = getComputedStyle(element);
   var x = parseFloat(styles.marginTop) + parseFloat(styles.marginBottom);
   var y = parseFloat(styles.marginLeft) + parseFloat(styles.marginRight);
   var result = {
@@ -14019,6 +14017,7 @@ Vue.component('feed-component', __webpack_require__(40));
 Vue.component('post-component', __webpack_require__(43));
 Vue.component('form-component', __webpack_require__(46));
 Vue.component('categoriesmenu-component', __webpack_require__(49));
+Vue.component('userprofile-component', __webpack_require__(61));
 // Vue.component('posts-component', require('./components/PostsComponent.vue'));
 
 var app = new Vue({
@@ -47373,11 +47372,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      category: '',
       posts: [],
+      userId: '',
       authuser: window.Laravel.user,
       authadmin: window.Laravel.admin,
       post_qty_limit: 3
@@ -47386,10 +47396,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
   methods: {
-    getPosts: function getPosts(last_id) {
+    getPosts: function getPosts() {
       var _this = this;
 
-      axios.get('api/posts/' + last_id).then(function (response) {
+      axios.get('api/posts/' + this.post_qty_limit + '/' + this.category + '/' + this.userId).then(function (response) {
         _this.posts = response.data;
       });
     },
@@ -47399,9 +47409,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       var height = d.offsetHeight;
       // console.log('offset = ' + offset);console.log('height = ' + height);
       if (offset === height) {
-        // console.log('bottom-end');
+        // console.log('llegaste-al-bottom');
         this.post_qty_limit += 3;
-        this.getPosts(this.post_qty_limit);
+        this.getPosts();
       }
     },
     pushPost: function pushPost(post) {
@@ -47409,15 +47419,24 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     popPost: function popPost(index) {
       this.posts.splice(index, 1);
+    },
+    updateCategory: function updateCategory(category) {
+      console.log('e');
+      this.category = category;
+      this.getPosts();
+    },
+    myPosts: function myPosts() {
+      this.userId = this.authuser.id;
+      // this.getPosts();
     }
   },
 
   mounted: function mounted() {
     var _this2 = this;
 
-    this.getPosts(this.post_qty_limit);
+    this.getPosts();
     setInterval(function () {
-      _this2.getPosts(_this2.post_qty_limit);
+      _this2.getPosts();
     }, 9000);
     window.addEventListener('scroll', this.handleScroll);
   }
@@ -47435,9 +47454,25 @@ var render = function() {
     "div",
     {},
     [
-      _c("categoriesmenu-component", { staticClass: "mb-4" }),
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-primary",
+          attrs: { type: "button", name: "button" },
+          on: { click: _vm.myPosts }
+        },
+        [_vm._v(" My posts")]
+      ),
       _vm._v(" "),
-      _c("form-component", { on: { "push-post": _vm.pushPost } }),
+      _c("categoriesmenu-component", {
+        staticClass: "mb-4",
+        on: { "filter-category": _vm.updateCategory }
+      }),
+      _vm._v(" "),
+      _c("form-component", {
+        attrs: { category: _vm.category },
+        on: { "push-post": _vm.pushPost }
+      }),
       _vm._v(" "),
       _vm._l(_vm.posts, function(post, index) {
         return _c("post-component", {
@@ -47531,6 +47566,7 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
 //
 //
 //
@@ -47744,7 +47780,9 @@ var render = function() {
           ])
         : _vm._e(),
       _vm._v(" "),
-      _c("p", [_vm._v(_vm._s(_vm.post.category.category_description))]),
+      _vm.post.category
+        ? _c("p", [_vm._v(_vm._s(_vm.post.category.category_description))])
+        : _c("p", [_vm._v("Has no Cat!")]),
       _vm._v(" "),
       _vm.authuser !== null && _vm.authuser.id == _vm.post.user_id
         ? _c(
@@ -47868,14 +47906,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      // success: '',
+      success: '',
       categories: [],
-      // content:'',
-      // category:'',
+      content: '',
       has_image: '',
       location: '',
       authuser: window.Laravel.user,
@@ -47907,12 +47948,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         headers: { 'content-type': 'multipart/form-data' }
       };
       var formData = new FormData(e.target);
+      formData.append('location', currentObj.location);
       for (var i = 0; i < this.has_image.length; i++) {
         var files = this.has_image[i];
         formData.append('has_image[' + i + ']', files);
       }
       axios.post('api/upload', formData, config).then(function (response) {
-        // console.log(response);
         if (response.data.success) {
           var post = response.data.success;
           currentObj.$emit('push-post', post);
@@ -47929,13 +47970,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(this.returnPosition);
         // navigator.geolocation.watchPosition(this.returnPosition);
+      } else {
+        console.log('location-error');
       }
     },
     returnPosition: function returnPosition(position) {
-      this.location = {
+      this.location = JSON.stringify({
         latitude: position.coords.latitude,
         longitude: position.coords.longitude
-      };
+      });
     }
   },
 
@@ -47986,38 +48029,21 @@ var render = function() {
                 _c(
                   "select",
                   { attrs: { name: "post_category_id" } },
-                  _vm._l(_vm.categories, function(category) {
-                    return _c("option", { domProps: { value: category.id } }, [
-                      _vm._v(_vm._s(category.category_description))
-                    ])
-                  })
-                ),
-                _vm._v(" "),
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: JSON.stringify(_vm.location),
-                      expression: "JSON.stringify(location)"
-                    }
+                  [
+                    _c("option", { attrs: { selected: "", value: "" } }, [
+                      _vm._v("Elegi cat si queres")
+                    ]),
+                    _vm._v(" "),
+                    _vm._l(_vm.categories, function(category) {
+                      return _c(
+                        "option",
+                        { domProps: { value: category.id } },
+                        [_vm._v(_vm._s(category.category_description))]
+                      )
+                    })
                   ],
-                  attrs: {
-                    id: "location",
-                    type: "text",
-                    name: "location",
-                    hidden: ""
-                  },
-                  domProps: { value: JSON.stringify(_vm.location) },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
-                      }
-                      _vm.$set(JSON, "stringify(location)", $event.target.value)
-                    }
-                  }
-                }),
+                  2
+                ),
                 _vm._v(" "),
                 _c(
                   "button",
@@ -48163,7 +48189,7 @@ exports = module.exports = __webpack_require__(52)(false);
 
 
 // module
-exports.push([module.i, "\n.menuCat[data-v-0a4e6ff2]{\n  overflow: hidden;\n}\n.menuCatItem[data-v-0a4e6ff2]{\n  width: 33%;\n  float: left;\n  text-align: center;\n}\n", ""]);
+exports.push([module.i, "\n.menuCat[data-v-0a4e6ff2]{\n  overflow: hidden;\n}\n.menuCatItem[data-v-0a4e6ff2]{\n  width: 25%;\n  float: left;\n  text-align: center;\n}\n", ""]);
 
 // exports
 
@@ -48542,11 +48568,34 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      defaultCat: "",
+      categories: []
+    };
+  },
+
+  //
+  //
+  //
+  methods: {
+    getCategories: function getCategories() {
+      var _this = this;
+
+      axios.get('api/categories').then(function (response) {
+        _this.categories = response.data;
+        // console.log(this.categories);
+      });
+    },
+    filterByCategory: function filterByCategory(category_id) {
+      this.$emit('filter-category', category_id);
+    }
+  },
   mounted: function mounted() {
-    console.log('Component mounted.');
+    this.getCategories();
+    // console.log('Component mounted.');
   }
 });
 
@@ -48558,30 +48607,46 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c("div", {}, [
+    _c(
+      "div",
+      { staticClass: "menuCat" },
+      [
+        _vm._l(_vm.categories, function(category) {
+          return _c(
+            "button",
+            {
+              staticClass: "menuCatItem",
+              attrs: { type: "button", name: "button" },
+              on: {
+                click: function($event) {
+                  _vm.filterByCategory(category.post_category_id)
+                }
+              }
+            },
+            [_vm._v(_vm._s(category.category_description))]
+          )
+        }),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "menuCatItem",
+            attrs: { type: "button", name: "button", value: _vm.defaultCat },
+            on: {
+              click: function($event) {
+                _vm.filterByCategory(_vm.defaultCat)
+              }
+            }
+          },
+          [_vm._v("ALL Cats")]
+        )
+      ],
+      2
+    )
+  ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", {}, [
-      _c("div", { staticClass: "menuCat" }, [
-        _c("a", { staticClass: "menuCatItem", attrs: { href: "#" } }, [
-          _vm._v("Calle")
-        ]),
-        _vm._v(" "),
-        _c("a", { staticClass: "menuCatItem", attrs: { href: "#" } }, [
-          _vm._v("Lugar")
-        ]),
-        _vm._v(" "),
-        _c("a", { staticClass: "menuCatItem", attrs: { href: "#" } }, [
-          _vm._v("Persona")
-        ])
-      ])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -48596,6 +48661,201 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 58 */,
+/* 59 */,
+/* 60 */,
+/* 61 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(2)
+/* script */
+var __vue_script__ = __webpack_require__(62)
+/* template */
+var __vue_template__ = __webpack_require__(63)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/UserProfileComponent.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-1f2574aa", Component.options)
+  } else {
+    hotAPI.reload("data-v-1f2574aa", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 62 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      editMode: null,
+      authuser: window.Laravel.user
+    };
+  },
+
+
+  methods: {
+    formSubmit: function formSubmit(e) {
+      e.preventDefault();
+      var currentObj = this;
+      var formData = new FormData(e.target);
+      axios.post('api/user', formData).then(function (response) {
+        var userName = document.getElementById('userName');
+        currentObj.authuser.name = userName.innerHTML = response.data.name;
+        currentObj.editMode = null;
+      }).catch(function (error) {
+        currentObj.output = error;
+      });
+    }
+  },
+
+  mounted: function mounted() {
+    console.log('Component mounted.');
+  }
+});
+
+/***/ }),
+/* 63 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "container" }, [
+    _c("div", { staticClass: "row justify-content-center" }, [
+      _vm.editMode
+        ? _c("div", {}, [
+            _c(
+              "form",
+              { attrs: { action: "/" }, on: { submit: _vm.formSubmit } },
+              [
+                _c("input", {
+                  attrs: { type: "text", name: "name" },
+                  domProps: { value: _vm.authuser.name }
+                }),
+                _vm._v(" \n        "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-danger",
+                    on: {
+                      click: function($event) {
+                        _vm.editMode = false
+                      }
+                    }
+                  },
+                  [_c("i", { staticClass: "fas fa-times" })]
+                ),
+                _vm._v(" "),
+                _vm._m(0)
+              ]
+            )
+          ])
+        : _c("div", {}, [
+            _vm._v("\n      " + _vm._s(_vm.authuser.name) + " "),
+            _c("i", {
+              staticClass: "far fa-edit",
+              on: {
+                click: function($event) {
+                  _vm.editMode = true
+                }
+              }
+            })
+          ]),
+      _vm._v(" "),
+      _c("br"),
+      _vm._v(" "),
+      _c("br")
+    ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass: "btn btn-primary",
+        attrs: { id: "submitPost", type: "submit" }
+      },
+      [_c("i", { staticClass: "fas fa-check" })]
+    )
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-1f2574aa", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);

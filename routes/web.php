@@ -14,8 +14,9 @@
 
 // Route::get('/', 'PostController@index')->name('index-feed');
 Auth::routes(['verify' => true]);
-Route::get('/', 'ViewController@feedIndex')->name('feed');
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/', 'FeedController@feedIndex')->name('feed');
+Route::get('/profile', 'ViewController@profileView')->name('profile');
+// Route::get('/home', 'HomeController@index')->name('home');
 
 
 
