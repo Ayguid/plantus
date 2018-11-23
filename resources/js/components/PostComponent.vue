@@ -35,10 +35,16 @@
     </div>
     <p v-if="post.category">{{post.category.category_description}}</p>
     <p v-else>Has no Cat!</p>
-    <!-- {{category}} -->
+
     <button  v-if="authuser !== null && authuser.id == post.user_id " @click="onClickDelete(post.id)" type="button" name="button">Delete My post</button>
 
     <br>
+    <br>
+
+
+    
+    <comments-list-component :comments="post.post_comments"></comments-list-component>
+
 
   </div>
 
@@ -104,7 +110,7 @@ export default {
     },
   },
   mounted(){
-
+    // console.log(this.post.post_comments);
   },
 }
 </script>

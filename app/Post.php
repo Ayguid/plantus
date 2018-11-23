@@ -6,6 +6,7 @@ use App\User;
 use App\Image;
 use App\Post_Like;
 use App\Post_Category;
+use App\Post_Comment;
 use Illuminate\Database\Eloquent\Model;
 
 
@@ -47,5 +48,13 @@ class Post extends Model
   {
     return $this->hasMany(Post_Like::class);
   }
+
+  public function postComments()
+  {
+    return $this->hasMany(Post_Comment::class);
+  }
+
+
+
 
 }

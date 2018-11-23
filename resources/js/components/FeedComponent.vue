@@ -5,11 +5,11 @@
 
 
 
-    <categoriesmenu-component class="mb-4" @filter-category="updateCategory"></categoriesmenu-component>
+    <!-- <categoriesmenu-component class="mb-4" @filter-category="updateCategory"></categoriesmenu-component> -->
 
 
 
-    <form-component @push-post="pushPost" :category="category">
+    <form-component @push-post="pushPost" >
     </form-component>
 
 
@@ -36,7 +36,7 @@ export default {
 
   data(){
     return  {
-      category:'',
+      // category:'',
       posts: [],
       userId:'',
       authuser:window.Laravel.user,
@@ -68,11 +68,11 @@ export default {
     popPost(index){
       this.posts.splice(index, 1);
     },
-    updateCategory(category){
-      console.log('e');
-      this.category = category;
-      this.getPosts();
-    },
+    // updateCategory(category){
+    //   console.log('e');
+    //   this.category = category;
+    //   this.getPosts();
+    // },
     myPosts(){
     this.userId = this.authuser.id;
     // this.getPosts();
