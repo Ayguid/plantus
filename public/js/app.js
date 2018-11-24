@@ -14020,6 +14020,7 @@ Vue.component('categoriesmenu-component', __webpack_require__(49));
 Vue.component('userprofile-component', __webpack_require__(57));
 Vue.component('comments-list-component', __webpack_require__(60));
 Vue.component('comment-component', __webpack_require__(63));
+Vue.component('form-comment-component', __webpack_require__(70));
 
 var app = new Vue({
   el: '#app'
@@ -47612,6 +47613,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['post'],
@@ -47805,9 +47807,7 @@ var render = function() {
       _vm._v(" "),
       _c("br"),
       _vm._v(" "),
-      _c("comments-list-component", {
-        attrs: { comments: _vm.post.post_comments }
-      })
+      _c("comments-list-component", { attrs: { post_id: _vm.post.id } })
     ],
     2
   )
@@ -48929,12 +48929,27 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['comments'],
+  props: ['post_id'],
   data: function data() {
-    return {};
+    return {
+      comments: ''
+    };
   },
+
+
+  methods: {
+    getComments: function getComments() {
+      var _this = this;
+
+      axios.get('api/comments/' + this.post_id).then(function (response) {
+        _this.comments = response.data;
+      });
+    }
+  },
+
   mounted: function mounted() {
     console.log('Component mounted.');
+    this.getComments();
   }
 });
 
@@ -48949,9 +48964,14 @@ var render = function() {
   return _c(
     "div",
     {},
-    _vm._l(_vm.comments, function(comment) {
-      return _c("comment-component", { attrs: { comment: comment } })
-    })
+    [
+      _c("form-comment-component", { attrs: { type: "comment" } }),
+      _vm._v(" "),
+      _vm._l(_vm.comments, function(comment) {
+        return _c("comment-component", { attrs: { comment: comment } })
+      })
+    ],
+    2
   )
 }
 var staticRenderFns = []
@@ -49044,9 +49064,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['comment'],
@@ -49066,24 +49083,31 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    { staticClass: "bg-primary mb-1" },
+    { staticClass: "bg-warning mb-1" },
     [
-      _c("div", {}, [
-        _vm._v("\n\n    " + _vm._s(_vm.comment.content)),
-        _c("br")
-      ]),
+      _c(
+        "div",
+        {},
+        [
+          _vm._v("\n\n    " + _vm._s(_vm.comment.content) + "\n    "),
+          _c("form-comment-component", { attrs: { type: "reply" } })
+        ],
+        1
+      ),
       _vm._v(" "),
       _vm._l(_vm.comment.allchildren, function(child) {
-        return _c(
-          "div",
-          {},
-          [
-            _vm.comment.allchildren.length > 0
-              ? _c("comment-component", { attrs: { comment: child } })
-              : _vm._e()
-          ],
-          1
-        )
+        return _vm.comment.allchildren.length > 0
+          ? _c(
+              "div",
+              {},
+              [
+                _vm.comment.allchildren.length > 0
+                  ? _c("comment-component", { attrs: { comment: child } })
+                  : _vm._e()
+              ],
+              1
+            )
+          : _vm._e()
       })
     ],
     2
@@ -49104,6 +49128,117 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 67 */,
+/* 68 */,
+/* 69 */,
+/* 70 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(71)
+/* template */
+var __vue_template__ = __webpack_require__(72)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/FormCommentComponent.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-9e645ba6", Component.options)
+  } else {
+    hotAPI.reload("data-v-9e645ba6", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 71 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['type'],
+  data: function data() {
+    return {};
+  },
+  mounted: function mounted() {
+    // console.log('Component mounted.');
+  }
+});
+
+/***/ }),
+/* 72 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", {}, [
+    _c(
+      "button",
+      {
+        staticClass: "btn btn-primary",
+        attrs: { type: "button", name: "button" }
+      },
+      [_c("i", { staticClass: "fas fa-edit" }, [_vm._v(_vm._s(_vm.type))])]
+    )
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-9e645ba6", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);

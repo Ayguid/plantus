@@ -43,7 +43,8 @@
 
 
 
-    <comments-list-component :comments="post.post_comments"></comments-list-component>
+    <!-- <comments-list-component :comments="post.post_comments"></comments-list-component> -->
+    <comments-list-component :post_id="post.id"></comments-list-component>
 
 
   </div>

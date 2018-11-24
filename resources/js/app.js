@@ -23,6 +23,7 @@ Vue.component('categoriesmenu-component', require('./components/CategoriesMenuCo
 Vue.component('userprofile-component', require('./components/UserProfileComponent.vue'));
 Vue.component('comments-list-component', require('./components/CommentsListComponent.vue'));
 Vue.component('comment-component', require('./components/CommentComponent.vue'));
+Vue.component('form-comment-component', require('./components/FormCommentComponent.vue'));
 
 const app = new Vue({
     el: '#app',
