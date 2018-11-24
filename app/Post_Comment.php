@@ -17,8 +17,14 @@ class Post_Comment extends Model
 
      public function children()
      {
-         return $this->hasMany($this,'parent_id', 'parent_id');
+         // return $this->hasMany($this,'parent_id')->where('parent_id', true);
+         return $this->hasMany($this,'parent_id');
      }
 
-
+     public function allchildren()
+     {
+         // return $this->hasMany($this,'parent_id')->where('parent_id', true);
+         // return $this->hasMany(Post_Comment::class,'parent_id');
+         return $this->children()->with('allchildren');
+     }
 }

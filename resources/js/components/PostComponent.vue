@@ -42,7 +42,7 @@
     <br>
 
 
-    
+
     <comments-list-component :comments="post.post_comments"></comments-list-component>
 
 

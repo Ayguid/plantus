@@ -20,23 +20,11 @@ class PostController extends Controller
       $this->middleware('auth:api',  ['except' => ['indexActivePosts']]);
   }
 
-  public static function indexActivePosts($limit )
+  public static function indexActivePosts($limit)
   {
-    // if ($userId !== null) {
-    //   if ($category !== null) {
-       return $posts=Post::where('is_active', true)->with('images', 'user', 'likes', 'category', 'postComments.children')->take($limit)->orderBy("created_at", "desc")->get();
-    //   }
-    //   else {
-    //     // code...
-    //   return $posts=Post::where('is_active', true)->where('user_id', $userId)->with('images', 'user', 'likes', 'category')->take($limit)->orderBy("created_at", "desc")->get();
-    // }
-    // }
-    //
-    // if ($category !== null) {
-    // $posts=Post::where('is_active', true)->where('post_category_id', $category)->with('images', 'user', 'likes', 'category')->take($limit)->orderBy("created_at", "desc")->get();
-    // }else {
-    // $posts=Post::where('is_active', true)->with('images', 'user', 'likes', 'category')->take($limit)->orderBy("created_at", "desc")->get();
-    // }
+
+       return $posts=Post::where('is_active', true)->with('images', 'user', 'likes', 'category', 'postComments.allchildren')->take($limit)->orderBy("created_at", "desc")->get();
+
     return $posts;
 
 
@@ -105,7 +93,7 @@ class PostController extends Controller
     }
     $post->images->each->delete();
     $post->likes->each->delete();
-    $post->postComments->each->delete();
+    $post->allPostComments->each->delete();
     $post->delete();
     });
 

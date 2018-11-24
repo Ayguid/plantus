@@ -51,9 +51,14 @@ class Post extends Model
 
   public function postComments()
   {
-    return $this->hasMany(Post_Comment::class);
+    return $this->hasMany(Post_Comment::class)->where('parent_id', null);
+
   }
 
+  public function allPostComments()
+  {
+    return $this->hasMany(Post_Comment::class);
+  }
 
 
 

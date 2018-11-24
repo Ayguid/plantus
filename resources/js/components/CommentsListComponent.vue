@@ -1,11 +1,11 @@
 <template>
   <div class="">
 
+<!-- {{JSON.stringify(comments)}} -->
 
 
 
-
-    <comment-component  v-for="comment in comments" :comment="comment"></comment-component>
+    <comment-component  v-for="comment in comments" :comment="comment" ></comment-component>
 
 
 
@@ -19,7 +19,11 @@
 <script>
 export default {
   props: ['comments'],
+  data(){
+    return  {
 
+    }
+  },
 
 
 
