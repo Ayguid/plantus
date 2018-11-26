@@ -49,16 +49,23 @@ class Post extends Model
     return $this->hasMany(Post_Like::class);
   }
 
-  public function postComments()
-  {
-    return $this->hasMany(Post_Comment::class)->where('parent_id', null);
 
+
+
+
+  public function children()
+  {
+    return $this->hasMany($this,'parent_id');
   }
 
-  public function allPostComments()
+  public function allchildren()
   {
-    return $this->hasMany(Post_Comment::class);
+    return $this->children()->with('allchildren');
   }
+
+
+
+
 
 
 

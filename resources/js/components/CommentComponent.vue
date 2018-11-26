@@ -2,16 +2,14 @@
   <div class="bg-warning mb-1">
 
     <div  class="">
-
       {{comment.content}}
-      <form-comment-component :type="'reply'"></form-comment-component>
-      <!-- form -->
+      <!-- <form-comment-component :type="'reply'"></form-comment-component> -->
     </div>
 
 
 
 
-    <div v-if="comment.allchildren.length > 0" v-for="child in comment.allchildren" class="">
+    <div v-if="comment.allchildren.length > 0" v-for="child in comment.allchildren" class="col-11">
 
       <comment-component  v-if="comment.allchildren.length > 0" :comment="child" ></comment-component>
 

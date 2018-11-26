@@ -24,8 +24,7 @@ Route::get('/categories', 'Post_CategoriesController@indexCategories');
 Route::get('/posts/{limit}/{category?}/{userId?}', 'PostController@indexActivePosts');
 Route::post('/postlikes/{id?}', 'PostLikeController@likePost');
 
-
-Route::get('/comments/{id}', 'PostCommentController@commentList');
+Route::get('/postComments/{post_id}', 'PostCommentController@commentList');
 
 Route::post('/upload', 'PostController@store');
 Route::post('/posts/destroy/{id}', 'PostController@destroy');

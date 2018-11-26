@@ -13988,7 +13988,7 @@ module.exports = Cancel;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(13);
-module.exports = __webpack_require__(66);
+module.exports = __webpack_require__(69);
 
 
 /***/ }),
@@ -14020,7 +14020,7 @@ Vue.component('categoriesmenu-component', __webpack_require__(49));
 Vue.component('userprofile-component', __webpack_require__(57));
 Vue.component('comments-list-component', __webpack_require__(60));
 Vue.component('comment-component', __webpack_require__(63));
-Vue.component('form-comment-component', __webpack_require__(70));
+Vue.component('form-comment-component', __webpack_require__(66));
 
 var app = new Vue({
   el: '#app'
@@ -47633,6 +47633,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
       if (confirm('Are you sure?')) {
         axios.post('api/posts/destroy/' + id).then(function (response) {
+          console.log(response.data);
           _this.$emit('pop-post', id);
         });
       } else {
@@ -48921,12 +48922,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['post_id'],
@@ -48941,7 +48936,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     getComments: function getComments() {
       var _this = this;
 
-      axios.get('api/comments/' + this.post_id).then(function (response) {
+      axios.get('api/postComments/' + this.post_id).then(function (response) {
         _this.comments = response.data;
       });
     }
@@ -48964,14 +48959,12 @@ var render = function() {
   return _c(
     "div",
     {},
-    [
-      _c("form-comment-component", { attrs: { type: "comment" } }),
-      _vm._v(" "),
-      _vm._l(_vm.comments, function(comment) {
-        return _c("comment-component", { attrs: { comment: comment } })
+    _vm._l(_vm.comments, function(comment) {
+      return _c("comment-component", {
+        key: comment.parent_id,
+        attrs: { comment: comment }
       })
-    ],
-    2
+    })
   )
 }
 var staticRenderFns = []
@@ -49062,8 +49055,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['comment'],
@@ -49085,21 +49076,15 @@ var render = function() {
     "div",
     { staticClass: "bg-warning mb-1" },
     [
-      _c(
-        "div",
-        {},
-        [
-          _vm._v("\n\n    " + _vm._s(_vm.comment.content) + "\n    "),
-          _c("form-comment-component", { attrs: { type: "reply" } })
-        ],
-        1
-      ),
+      _c("div", {}, [
+        _vm._v("\n    " + _vm._s(_vm.comment.content) + "\n    ")
+      ]),
       _vm._v(" "),
       _vm._l(_vm.comment.allchildren, function(child) {
         return _vm.comment.allchildren.length > 0
           ? _c(
               "div",
-              {},
+              { staticClass: "col-11" },
               [
                 _vm.comment.allchildren.length > 0
                   ? _c("comment-component", { attrs: { comment: child } })
@@ -49125,23 +49110,14 @@ if (false) {
 
 /***/ }),
 /* 66 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 67 */,
-/* 68 */,
-/* 69 */,
-/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(71)
+var __vue_script__ = __webpack_require__(67)
 /* template */
-var __vue_template__ = __webpack_require__(72)
+var __vue_template__ = __webpack_require__(68)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -49180,7 +49156,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 71 */
+/* 67 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -49212,7 +49188,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 72 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -49239,6 +49215,12 @@ if (false) {
     require("vue-hot-reload-api")      .rerender("data-v-9e645ba6", module.exports)
   }
 }
+
+/***/ }),
+/* 69 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
 
 /***/ })
 /******/ ]);

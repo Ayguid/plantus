@@ -67,6 +67,7 @@ export default {
     onClickDelete(id){
       if (confirm('Are you sure?')) {
         axios.post('api/posts/destroy/' + id).then((response) => {
+          console.log(response.data);
           this.$emit('pop-post', id);
         });
       }else{

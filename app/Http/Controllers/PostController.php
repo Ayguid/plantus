@@ -23,11 +23,7 @@ class PostController extends Controller
   public static function indexActivePosts($limit)
   {
 
-       return $posts=Post::where('is_active', true)->with('images', 'user', 'likes', 'category', 'postComments.allchildren')->take($limit)->orderBy("created_at", "desc")->get();
-
-    return $posts;
-
-
+    return $posts=Post::where('is_active', true)->where('parent_id', null)->with('images', 'user', 'likes', 'category', 'allchildren')->take($limit)->orderBy("created_at", "desc")->get();
 
   }
 
@@ -86,6 +82,8 @@ class PostController extends Controller
 
   public function destroy($id)
   {
+    // return Post::where('id', $id)->with('allChildren')->get();
+
   return DB::transaction(function () use ($id) {
     $post = Post::find($id);
     if ($post->images->count() > 0) {
@@ -93,7 +91,8 @@ class PostController extends Controller
     }
     $post->images->each->delete();
     $post->likes->each->delete();
-    $post->allPostComments->each->delete();
+    // $post->allChildren->each->allChildren->delete();
+    //como borrar comments
     $post->delete();
     });
 
