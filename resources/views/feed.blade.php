@@ -14,20 +14,6 @@
           <div class="alert alert-danger"><i class="fa fa-times" aria-hidden="true"></i> <strong>{!! session('alert-danger') !!}</strong>  {{$errors}}</div>
         @endif
 
-        {{-- <div class="card-body">
-        @if (session('status'))
-        <div class="alert alert-success" role="alert">
-        {{ session('status') }}
-      </div>
-    @endif
-  </div> --}}
-
-
-  <div id="image_modal" class="image_modal">
-    <!-- Modal Content (The Image) -->
-    <img class="imgModal" id="imgModal">
-    <!-- Modal Caption (Image Text) -->
-  </div>
 
 
 
@@ -44,7 +30,6 @@
 
 
 
-
 <feed-component></feed-component>
 
 
@@ -55,7 +40,7 @@
 
 
 
-<button id="backToTop" class="" title="Go to top">Fly</button>
+
 
 </div>
 </div>

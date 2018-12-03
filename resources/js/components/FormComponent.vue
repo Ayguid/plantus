@@ -1,69 +1,60 @@
 <template>
-  <div v-if="authuser !== null" class="">
+  <div v-if="this.$parent.authuser !== null" class="">
+    <!-- <div class="post_button">
+    <button id="post_button" type="button" name="button" v-on:click="displayForm(); resetParent_id()">PLANK IT!!</button>
+  </div> -->
 
 
+  <div id="post_input" class="card post_input">
 
-
-    <div class="post_button">
-      <button id="post_button" type="button" name="button">PLANK IT!!</button>
+    <div class="" v-if="parent_post">
+      Le estas respondiendo a {{parent_post.user.name}}
+      {{parent_post.id}}
+    </div>
+    <div class="" v-else>
+      Estas Plankeandola
     </div>
 
 
-    <div id="post_input" class="card post_input">
-
-      <form action="/" @submit="formSubmit" enctype="multipart/form-data">
-
-        <div class="form-group">
-          <textarea rows="4" id="content" class="form-control" type="text"  name="content"  placeholder="Post Something" required></textarea>
-        </div>
-        <div class="form-group">
-          <input id="has_image"class="form-control-file" v-on:change="onImageChange" type="file" placeholder="Something cool" multiple>
-        </div>
-
-        <select class="" name="post_category_id">
-          <option selected value="">Elegi cat si queres</option>
-          <option v-for="category in categories"
-          :value="category.id" >{{category.category_description}}</option>
-        </select>
-
-        <button id="submitPost"  type="submit" class="btn btn-primary">Submit</button>
-
-      </form>
-
-
-    </div>
-    <br>
-
-
-
+    <form action="/" @submit="formSubmit" enctype="multipart/form-data">
+      <div class="form-group">
+        <textarea rows="4" id="content" class="form-control" type="text"  name="content"  placeholder="Post Something" required></textarea>
+      </div>
+      <div class="form-group">
+        <input id="has_image"class="form-control-file" v-on:change="onImageChange" type="file" placeholder="Something cool" multiple>
+      </div>
+      <input v-if="parent_post" type="text" name="parent_id" :value="parent_post.id" hidden>
+      <button id="submitPost"  type="submit" class="btn btn-primary">Submit</button>
+    </form>
 
 
   </div>
+  <br>
+
+
+
+
+
+</div>
 </template>
 
 <script>
 export default {
-
+  props:['parent_post'],
   data(){
     return  {
       success:'',
-      categories:[],
       content:'',
       has_image: '',
       location:'',
-      authuser:window.Laravel.user,
-      authadmin:window.Laravel.admin
     }
   },
 
 
   methods: {
-    getCategories() {
-      axios.get('api/categories').then((response) => {
-        this.categories = response.data;
-      });
-    },
+
     onImageChange(e){
+
       if (parseInt(e.target.files.length) > 3){
         alert("You are only allowed to upload a maximum of 3 files");
         e.target.value = null;
@@ -101,7 +92,6 @@ export default {
     getLocation(){
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(this.returnPosition);
-        // navigator.geolocation.watchPosition(this.returnPosition);
       }
       else{
         console.log('location-error');
@@ -118,7 +108,6 @@ export default {
 
   mounted(){
     this.getLocation();
-    this.getCategories();
   }
 
 }

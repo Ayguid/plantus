@@ -28,13 +28,7 @@ class ProfileController extends Controller
     $user = Auth::user();
     $user->name =  $request->name;
     $user->update();
-//     return response()->json([
-//     'user' => $user,
-//
-// ]);
-     // $this->middleware('auth:api');
-    // $user->name=  $request->name;
-    // $user->save();
+
     return $user;
   }
 

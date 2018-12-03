@@ -1,7 +1,7 @@
 <template>
 
-  <div class="post_box">
-
+  <div class="post_box" >
+<!-- {{post}} -->
     <p id="content" class="content"
     v-html="convertToTag(post.content)">
   </p>
@@ -9,18 +9,17 @@
     <br>
     <a href="#">{{post.user.name}}</a>
     <br>
-    <img  @click="resizeImage($event.target)" class="post_image" v-for='image in post.images'
+    <img  @click="imageBus($event.target)" class="post_image" v-for='image in post.images'
     :src="'storage/uploads/PostMedia/'+image.image_path" alt="">
     <br>
 
 
     <div class="likes">
-      <a @click="likePost(post.id)" class="cacaButton">&#128169; &nbsp;{{likes.length}}</a>
+      <a @click="likePost(post.id)" class="cacaButton" >&#128169; &nbsp;{{post.likes.length}}</a>
     </div>
 
     <br>
-
-    <div class="" v-if="post.location">
+    <div class="" v-if="post.location && !post.parent_id">
       <p>
         <button  class="btn btn-primary" type="button" data-toggle="collapse" :data-target="'#id'+post.id" aria-expanded="false" >
           Show Location
@@ -33,18 +32,28 @@
         </div>
       </div>
     </div>
-    <p v-if="post.category">{{post.category.category_description}}</p>
-    <p v-else>Has no Cat!</p>
 
-    <button  v-if="authuser !== null && authuser.id == post.user_id " @click="onClickDelete(post.id)" type="button" name="button">Delete My post</button>
+    <button  v-if="this.$root.authuser !== null && this.$root.authuser.id == post.user_id " @click="onClickDelete(post.id)" type="button" name="button"><span v-if="!post.parent_id">Delete My post</span><span v-else>Delete My Comment</span> </button>
 
     <br>
-    <br>
 
 
+    <button v-if="this.$root.authuser" type="button" name="comment" v-on:click="busPushComment(post)">
+      <span v-if="!post.parent_id">Comment</span>
+       <span v-else>Reply</span>
+    </button>
+    <!-- <button type="button" name="follow">Follow</button> -->
 
-    <!-- <comments-list-component :comments="post.post_comments"></comments-list-component> -->
-    <comments-list-component :post_id="post.id"></comments-list-component>
+
+    <div class="" v-if="post.allchildren && post.allchildren.length > 0" class="col-11" >
+      <post-component v-for="child in post.allchildren"
+        :post="child"
+        @push-comment="busPushComment"
+        @pop-post="busPopComment"
+        @image-bus="imageBus"
+        :key="child.id">
+      </post-component>
+    </div>
 
 
   </div>
@@ -56,14 +65,20 @@ export default {
   props: ['post'],
   data(){
     return  {
-      likes:this.post.likes,
-      authuser:window.Laravel.user,
-      authadmin:window.Laravel.admin,
       location: JSON.parse(this.post.location),
       g_maps_key:process.env.MIX_GOOGLE_MAPS_KEY,
     }
   },
   methods: {
+    busPushComment(post){
+      this.$emit('push-comment', post);
+    },
+    busPopComment(post){
+      this.$emit('pop-post', post);
+    },
+    imageBus(target){
+      this.$emit('image-bus', target);
+    },
     onClickDelete(id){
       if (confirm('Are you sure?')) {
         axios.post('api/posts/destroy/' + id).then((response) => {
@@ -89,30 +104,21 @@ export default {
         return text1.replace(exp2, '$1<a target="_blank" href="http://$2">$2</a>');
       }
     },
-    resizeImage(target){
-      var modal = document.getElementById('image_modal');
-      var modalImg = document.getElementById("imgModal");
-      modal.style.display = "block";
-      modalImg.src = target.src;
-      modalImg.onclick = function() {
-        modal.style.display = "none";
-      }
-    },
     likePost(post_id){
       axios.post('api/postlikes/'+post_id).then((response) => {
-        // console.log(response.data);
         var like = {};
         if (response.data == 'saved') {
-          this.likes.push(like);
+          this.post.likes.push(like);
         }
         if (response.data == 'deleted') {
-          this.likes.pop(like);
+          this.post.likes.pop(like);
         }
       });
     },
   },
   mounted(){
-    // console.log(this.post.post_comments);
+    // console.log(this.$root.authuser);
+    console.log(this.post);
   },
 }
 </script>

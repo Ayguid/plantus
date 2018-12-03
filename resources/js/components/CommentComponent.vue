@@ -3,10 +3,9 @@
 
     <div  class="">
       {{comment.content}}
-      <!-- <form-comment-component :type="'reply'"></form-comment-component> -->
     </div>
 
-
+    <!-- <button type="button" name="comment" v-on:click="$emit('push-comment', post)">Comment</button> -->
 
 
     <div v-if="comment.allchildren.length > 0" v-for="child in comment.allchildren" class="col-11">
@@ -31,17 +30,9 @@ export default {
 
 
 
-
-
-
-
   mounted() {
     // console.log('Component mounted.');
   }
-
-
-
-
 
 
 

@@ -13,7 +13,7 @@
        window.Laravel = {!! json_encode([
            'csrfToken' => csrf_token(),
            'apiToken' => $currentUser->api_token ?? null,
-           'user' => Auth::user(),
+           'user' => Auth::user()->with('iFollow', 'myFollowers')->first(),
            'admin' => Auth::guard('admin')->check(),
        ]) !!};
     </script>
@@ -31,7 +31,7 @@
     <link href="{{ asset('css/plantus.css') }}" rel="stylesheet">
 </head>
 <body>
-    <div id="app">
+    <div id="app" >
         <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
@@ -95,8 +95,7 @@
             @yield('content')
         </main>
     </div>
-
-    <script rel="subresource" src="{{ asset('js/plankFormDisplay.js') }}" defer></script>
+<button id="backToTop" class="" title="Go to top">Fly</button>
     <script rel="subresource" src="{{ asset('js/logIn.js') }}" defer></script>
     <script rel="subresource" src="{{ asset('js/backTotop.js') }}" defer></script>
     {{-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> --}}

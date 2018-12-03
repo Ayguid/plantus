@@ -78,8 +78,11 @@
   to { opacity: 1; }
 }
 
-.post_input{
+.modal_form{
   display: none;
+}
+.post_input{
+  /* display: none;
   position: absolute;
   left: 0;
   right: 0;
@@ -88,7 +91,19 @@
   -moz-box-shadow: 6px 8px 6px -6px black;
   box-shadow: 6px 8px 6px -6px black;
   -webkit-animation: fadeIn 1s;
-  animation: fadeIn 1s;
+  animation: fadeIn 1s; */
+
+  display: none;
+  top: 50%;
+  left: 50%;
+  height: 18em;
+  width: 30em;
+  margin-top: -9em; /*set to a negative number 1/2 of your height*/
+  margin-left: -15em; /*set to a negative number 1/2 of your width*/
+  border: 1px solid #ccc;
+  background-color: #f3f3f3;
+  position:fixed;
+  z-index: 100;
 }
 
 .post_button{

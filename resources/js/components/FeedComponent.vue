@@ -1,31 +1,38 @@
 <template>
   <div class="">
 
-    <button @click="myPosts" class="btn btn-primary" type="button" name="button"> My posts</button>
+    <div id="image_modal" class="image_modal">
+      <!-- Modal Content (The Image) -->
+      <img class="imgModal" id="imgModal">
+      <!-- Modal Caption (Image Text) -->
+    </div>
 
 
 
-    <!-- <categoriesmenu-component class="mb-4" @filter-category="updateCategory"></categoriesmenu-component> -->
+    <div v-if="this.$root.authuser" class="post_button">
+      <button id="post_button" type="button" name="button" v-on:click="displayForm(); resetParent_id()">PLANK IT!!</button>
+    </div>
 
 
 
-    <form-component @push-post="pushPost" >
-    </form-component>
-
+    <div id="form_modal" class="form_modal">
+      <form-component @push-post="pushPost" :parent_post="parent_post" >
+      </form-component>
+    </div>
 
 
     <post-component v-for="(post, index)  in posts"
     :key="post.id" :post="post"
-    @pop-post="popPost(index)">
-    </post-component>
+    @pop-post="popPost(index)"
+    @push-comment="pushComment"
+    @image-bus="resizeImage">
+  </post-component>
 
 
-    <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+  <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
 
 
-
-
-    </div>
+</div>
 </template>
 
 
@@ -33,59 +40,79 @@
 
 <script>
 export default {
-
+  props:['user_id'],
   data(){
     return  {
-      // category:'',
+      parent_post:'',
       posts: [],
-      userId:'',
-      authuser:window.Laravel.user,
-      authadmin:window.Laravel.admin,
       post_qty_limit:3,
     }
   },
 
   methods: {
+    resetParent_id(){
+      this.parent_post = '';
+    },
+    displayForm(){
+      var post_input = document.getElementById('post_input');
+      if (post_input.style.display === "block") {
+        post_input.style.display = "none";
+      } else {
+        post_input.style.display = "block";
+      }
+    },
+    resizeImage(target){
+      console.log(target);
+      var modal = document.getElementById('image_modal');
+      var modalImg = document.getElementById("imgModal");
+      modal.style.display = "block";
+      modalImg.src = target.src;
+      modalImg.onclick = function() {
+      modal.style.display = "none";
+      }
+    },
     getPosts() {
-      axios.get('api/posts/'+this.post_qty_limit+'/'+this.category+'/'+this.userId).then((response) => {
-        this.posts = response.data;
-      });
+        axios.get('api/posts/'+this.post_qty_limit+'/'+this.user_id).then((response) => {
+          this.posts = response.data;
+        });
     },
     handleScroll(e){
       var d = document.documentElement;
       var offset = d.scrollTop + window.innerHeight;
       var height = d.offsetHeight;
-      // console.log('offset = ' + offset);console.log('height = ' + height);
+      // console.log('offset = ' + offset);console.log('height = ' + height);console.log('d.scrollTop = ' + d.scrollTop);
       if (offset === height) {
         // console.log('llegaste-al-bottom');
         this.post_qty_limit += 3;
         this.getPosts();
       }
+      if (d.scrollTop == 0) {
+        this.getPosts();
+      }
+
     },
     pushPost(post){
-      this.posts.unshift(post);
+      this.displayForm();
+      if (!post.parent_id) {
+        this.posts.unshift(post);
+      }
+      else{
+        this.getPosts();
+      }
+    },
+    pushComment(post){
+      this.displayForm();
+      this.parent_post = post;
     },
     popPost(index){
-      this.posts.splice(index, 1);
+      // this.posts.splice(index, 1);
+      this.getPosts();
     },
-    // updateCategory(category){
-    //   console.log('e');
-    //   this.category = category;
-    //   this.getPosts();
-    // },
-    myPosts(){
-    this.userId = this.authuser.id;
-    // this.getPosts();
-    }
   },
 
   mounted(){
     this.getPosts();
-    setInterval(()=>{
-    this.getPosts();
-    },9000);
     window.addEventListener('scroll', this.handleScroll);
-
   },
 }
 </script>

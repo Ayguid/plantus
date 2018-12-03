@@ -15,10 +15,10 @@ class Post extends Model
 
 
 
-  protected $guard = 'posts';
+  protected $table = 'posts';
 
   protected $fillable = [
-    'user_id', 'post_category_id', 'has_image', 'content', 'location', 'is_active',
+    'user_id', 'parent_id', 'post_category_id', 'has_image', 'content', 'location', 'is_active',
   ];
 
   /**
@@ -55,7 +55,7 @@ class Post extends Model
 
   public function children()
   {
-    return $this->hasMany($this,'parent_id');
+    return $this->hasMany($this,'parent_id')->with('user', 'likes', 'images');
   }
 
   public function allchildren()

@@ -16,9 +16,10 @@
 
 
 
+                    @isset($userId)
+{{dd($userId)}}
+                    @endisset
 
-                    <userprofile-component></userprofile-component>
-                    
 
 
 

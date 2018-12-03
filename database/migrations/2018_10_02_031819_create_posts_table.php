@@ -16,7 +16,7 @@ class CreatePostsTable extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->nullable();
-            $table->integer('parent_id')->references('id')->on('posts')->onDelete('cascade')->nullable();
+            $table->integer('parent_id')->nullable();
             $table->integer('post_category_id')->nullable();
             $table->boolean('has_image')->nullable();
             $table->string('content')->nullable();

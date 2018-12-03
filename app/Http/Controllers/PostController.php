@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use DB;
 use App\Post;
+use App\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
@@ -17,13 +18,16 @@ class PostController extends Controller
 
   public function __construct()
   {
-      $this->middleware('auth:api',  ['except' => ['indexActivePosts']]);
+    $this->middleware('auth:api',  ['except' => ['indexActivePosts']]);
   }
 
-  public static function indexActivePosts($limit)
+  public static function indexActivePosts($limit, $userId = null)
   {
-
-    return $posts=Post::where('is_active', true)->where('parent_id', null)->with('images', 'user', 'likes', 'category', 'allchildren')->take($limit)->orderBy("created_at", "desc")->get();
+    $posts=Post::where('is_active', true)->where('parent_id', null);
+    if ($userId > 0) {
+      $posts->where('user_id', $userId);
+    }
+    return $posts->with('images', 'user', 'likes', 'category', 'allchildren')->take($limit)->orderBy("created_at", "desc")->get();
 
   }
 
@@ -36,8 +40,8 @@ class PostController extends Controller
         'content' => 'required|max:255',
         'has_image.*' => 'mimes:jpeg,jpg,gif,bmp,png,webp|max:5000',
         [
-        'has_image.*.mimes' => 'Only jpeg,png and bmp images are allowed',
-        'has_image.*.max' => 'Sorry! Maximum allowed size for an image is 5MB',
+          'has_image.*.mimes' => 'Only jpeg,png and bmp images are allowed',
+          'has_image.*.max' => 'Sorry! Maximum allowed size for an image is 5MB',
         ]
       ]);
       if ($validatedData->fails())
@@ -77,27 +81,39 @@ class PostController extends Controller
 
 
 
-
+  public function searchChildren($object)
+  {
+    $ids = [];
+    foreach ($object->allChildren as $child) {
+      $ids[] = $child->id;
+      $ids = array_merge($ids, $this->searchChildren($child));
+      if ($child->images->count() > 0) {
+        $this->destroyImages($child, 'public/uploads/PostMedia/');
+        $child->images->each->delete();
+      }
+      if ($child->likes->count() > 0) {
+        $child->likes->each->delete();
+      }
+    }
+    return $ids;
+  }
 
 
   public function destroy($id)
   {
-    // return Post::where('id', $id)->with('allChildren')->get();
-
-  return DB::transaction(function () use ($id) {
-    $post = Post::find($id);
-    if ($post->images->count() > 0) {
-      $this->destroyImages($post, 'public/uploads/PostMedia/');
-    }
-    $post->images->each->delete();
-    $post->likes->each->delete();
-    // $post->allChildren->each->allChildren->delete();
-    //como borrar comments
-    $post->delete();
+    return DB::transaction(function () use ($id) {
+      $parent = Post::findOrFail($id);
+      if ($parent->images->count() > 0) {
+        $this->destroyImages($parent, 'public/uploads/PostMedia/');
+        $parent->images->each->delete();
+      }
+      if ($parent->likes->count() > 0) {
+        $parent->likes->each->delete();
+      }
+      $array_of_ids = $this->searchChildren($parent);
+      array_push($array_of_ids, $id);
+      Post::destroy($array_of_ids);
     });
-
-
-
   }
 
 

@@ -21,10 +21,13 @@ Vue.component('post-component', require('./components/PostComponent.vue'));
 Vue.component('form-component', require('./components/FormComponent.vue'));
 Vue.component('categoriesmenu-component', require('./components/CategoriesMenuComponent.vue'));
 Vue.component('userprofile-component', require('./components/UserProfileComponent.vue'));
-Vue.component('comments-list-component', require('./components/CommentsListComponent.vue'));
-Vue.component('comment-component', require('./components/CommentComponent.vue'));
-Vue.component('form-comment-component', require('./components/FormCommentComponent.vue'));
 
 const app = new Vue({
     el: '#app',
+    data(){
+      return  {
+        authuser:window.Laravel.user,
+        authadmin:window.Laravel.admin
+      }
+    },
 });
