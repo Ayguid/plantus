@@ -39,5 +39,11 @@ class Admin extends Authenticatable
     }
 
 
+    public function userMainData()
+    {
+      // $this->iFollow;
+      // $this->myFollowers;
+      return $this;
 
+    }
 }

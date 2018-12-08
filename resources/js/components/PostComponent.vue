@@ -2,94 +2,106 @@
 
   <div class="post_box" >
 <!-- {{post}} -->
-    <p id="content" class="content"
-    v-html="convertToTag(post.content)">
-  </p>
-
-    <br>
-    <a href="#">{{post.user.name}}</a>
-    <br>
-    <img  @click="imageBus($event.target)" class="post_image" v-for='image in post.images'
-    :src="'storage/uploads/PostMedia/'+image.image_path" alt="">
-    <br>
 
 
-    <div class="likes">
-      <a @click="likePost(post.id)" class="cacaButton" >&#128169; &nbsp;{{post.likes.length}}</a>
-    </div>
+     <p id="content" class="content"
+     v-html="convertToTag(post.content)">
+   </p>
 
-    <br>
-    <div class="" v-if="post.location && !post.parent_id">
-      <p>
-        <button  class="btn btn-primary" type="button" data-toggle="collapse" :data-target="'#id'+post.id" aria-expanded="false" >
-          Show Location
-        </button>
-      </p>
-      <div class="collapse" :id="'id'+post.id">
-        <div class="card card-body">
-          <iframe  width="100%" height="" frameborder="0" style="border:0"
-          :src="'https://www.google.com/maps/embed/v1/place?q=' + this.location.latitude + ',+' + this.location.longitude + '&key='+g_maps_key" allowfullscreen></iframe>
-        </div>
-      </div>
-    </div>
+   <br>
+   <a href="#">{{post.user.name}}</a>
 
-    <button  v-if="this.$root.authuser !== null && this.$root.authuser.id == post.user_id " @click="onClickDelete(post.id)" type="button" name="button"><span v-if="!post.parent_id">Delete My post</span><span v-else>Delete My Comment</span> </button>
+   <br>
+   <img  @click="emitImage($event.target)" class="post_image" v-for='image in post.images'
+   :src="'storage/uploads/PostMedia/'+image.image_path" alt="">
+   <br>
 
-    <br>
+ <span>{{post.created_at}}</span>
+   <div class="likes">
+     <a @click="likePost(post.id)" class="cacaButton" v-bind:class="{cacaUserLikes: user_likes}" >&#128169; &nbsp;{{post.likes.length}}</a>
+   </div>
 
-
-    <button v-if="this.$root.authuser" type="button" name="comment" v-on:click="busPushComment(post)">
-      <span v-if="!post.parent_id">Comment</span>
-       <span v-else>Reply</span>
-    </button>
-    <!-- <button type="button" name="follow">Follow</button> -->
-
-
-    <div class="" v-if="post.allchildren && post.allchildren.length > 0" class="col-11" >
-      <post-component v-for="child in post.allchildren"
-        :post="child"
-        @push-comment="busPushComment"
-        @pop-post="busPopComment"
-        @image-bus="imageBus"
-        :key="child.id">
-      </post-component>
-    </div>
+   <br>
+   <div class="" v-if="post.location && !post.parent_id">
+     <p>
+       <button  class="btn btn-primary" type="button" data-toggle="collapse" :data-target="'#id'+post.id" aria-expanded="false" >
+         Show Location
+       </button>
+     </p>
+     <div class="collapse" :id="'id'+post.id">
+       <div class="card card-body">
+         <iframe  width="100%" height="" frameborder="0" style="border:0"
+         :src="'https://www.google.com/maps/embed/v1/place?q=' + this.location.latitude + ',+' + this.location.longitude + '&key='+$root.g_maps_key" allowfullscreen></iframe>
+       </div>
+     </div>
+   </div>
 
 
-  </div>
+   <button  v-if="$root.authuser !== null && $root.authuser.id == post.user_id " @click="onClickDelete(post.id)" type="button" name="button"><span v-if="!post.parent_id">Delete My post</span><span v-else>Delete My Comment</span> </button>
+
+<div v-if="$root.authadmin ==true" class="">
+  <button  @click="onClickDelete(post.id)" type="button" name="button">Delete post Admin style</button>
+</div>
+
+   <br>
+
+
+   <button v-if="$root.authuser" type="button" name="comment" @click="emitComment(post)">
+     <span v-if="!post.parent_id">Comment</span>
+     <span v-else>Reply</span>
+   </button>
+
+
+
+   <div class="" v-if="post.allchildren && post.allchildren.length > 0" class="col-11" >
+     <post-component v-for="child in post.allchildren"
+     :post="child"
+     :key="child.id">
+   </post-component>
+ </div>
+
+
+</div>
 
 </template>
 
 <script>
+import { EventBus } from '../event-bus.js';
+import _ from 'lodash';
+Object.defineProperty(Vue.prototype, '$_', { value: _ });
+
 export default {
   props: ['post'],
   data(){
     return  {
       location: JSON.parse(this.post.location),
-      g_maps_key:process.env.MIX_GOOGLE_MAPS_KEY,
+      user_likes: '',
     }
   },
   methods: {
-    busPushComment(post){
-      this.$emit('push-comment', post);
+    emitComment: function(post){
+      EventBus.$emit('push-post', post);
     },
-    busPopComment(post){
-      this.$emit('pop-post', post);
+    emitImage: function(target){
+      EventBus.$emit('resizeImage', target);
     },
-    imageBus(target){
-      this.$emit('image-bus', target);
+
+    likedByUser: function(){
+      this.user_likes  = (_.filter(this.post.likes, {user_id: this.$root.authuser.id}).length)? true : false;
     },
-    onClickDelete(id){
+
+    onClickDelete: function(id){
       if (confirm('Are you sure?')) {
         axios.post('api/posts/destroy/' + id).then((response) => {
           console.log(response.data);
-          this.$emit('pop-post', id);
+          // this.$emit('pop-post', id);
+          EventBus.$emit('pop-post', id);
         });
       }else{
         alert('no problem!');
       }
     },
-    convertToTag(content){
+    convertToTag: function(content){
       var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
       var match = content.match(regExp);
       if ( match && match[7].length == 11 ){
@@ -104,7 +116,8 @@ export default {
         return text1.replace(exp2, '$1<a target="_blank" href="http://$2">$2</a>');
       }
     },
-    likePost(post_id){
+    likePost: function(post_id){
+      this.user_likes = (this.user_likes)? null : true;
       axios.post('api/postlikes/'+post_id).then((response) => {
         var like = {};
         if (response.data == 'saved') {
@@ -115,10 +128,15 @@ export default {
         }
       });
     },
+
+
+  },
+
+  computed:{
   },
   mounted(){
-    // console.log(this.$root.authuser);
-    console.log(this.post);
+      this.likedByUser();
+
   },
 }
 </script>

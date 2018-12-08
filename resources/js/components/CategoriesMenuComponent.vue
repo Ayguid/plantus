@@ -35,13 +35,13 @@ export default {
   //
   //
   methods:{
-    getCategories() {
+    getCategories: function() {
       axios.get('api/categories').then((response) => {
         this.categories = response.data;
         // console.log(this.categories);
       });
     },
-    filterByCategory(category_id){
+    filterByCategory: function(category_id){
         this.$emit('filter-category', category_id);
     },
 },

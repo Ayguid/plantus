@@ -13,7 +13,9 @@
        window.Laravel = {!! json_encode([
            'csrfToken' => csrf_token(),
            'apiToken' => $currentUser->api_token ?? null,
-           'user' => Auth::user()->with('iFollow', 'myFollowers')->first(),
+           // 'user' => Auth::user(),
+           // 'user' =>  Auth::user() ? App\User::findOrFail(Auth::user()->id)->userMainData() : Auth::user(),
+           'user' =>  Auth::user() ? Auth::user()->userMainData() : Auth::user(),
            'admin' => Auth::guard('admin')->check(),
        ]) !!};
     </script>
@@ -51,16 +53,9 @@
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
                         @guest
-                            <li class="nav-item">
-                                <a id="login" class="nav-link" href="#">{{ __('Login') }}</a>
-                                {{-- <div id="floatingLogIn"><a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a></div> --}}
-                                <div id="logInModal" class="image_modal">
-                                <div id="floatingLogIn">
-
-                                  @include('components.logInForm')
-                                </div>
-                                </div>
-                            </li>
+                          <li class="nav-item">
+                            <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                        </li>
                             <li class="nav-item">
                                 @if (Route::has('register'))
                                     <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
@@ -92,13 +87,14 @@
         </nav>
 
         <main class="py-4">
+
             @yield('content')
         </main>
     </div>
 <button id="backToTop" class="" title="Go to top">Fly</button>
-    <script rel="subresource" src="{{ asset('js/logIn.js') }}" defer></script>
-    <script rel="subresource" src="{{ asset('js/backTotop.js') }}" defer></script>
-    {{-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> --}}
+
+<script rel="subresource" src="{{ asset('js/backTotop.js') }}" defer></script>
+
 
 </body>
 </html>

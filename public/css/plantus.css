@@ -16,7 +16,7 @@
   color: blue;
 }
 /* modal js img */
-.image_modal {
+.modal {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
   z-index: 1; /* Sit on top */
@@ -29,12 +29,14 @@
   background-color: rgb(0,0,0); /* Fallback color */
   background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
 }
-.imgModal{
+.insideModal{
   margin: auto;
   display: block;
   width:80%;
 }
-
+.close_modal{
+  color: white;
+}
 @keyframes zoom {
   from {transform:scale(0)}
   to {transform:scale(1)}
@@ -78,32 +80,11 @@
   to { opacity: 1; }
 }
 
-.modal_form{
+/* .modal_form{
   display: none;
-}
+} */
 .post_input{
-  /* display: none;
-  position: absolute;
-  left: 0;
-  right: 0;
-  z-index: 1;
-  -webkit-box-shadow: 6px 8px 6px -6px black;
-  -moz-box-shadow: 6px 8px 6px -6px black;
-  box-shadow: 6px 8px 6px -6px black;
-  -webkit-animation: fadeIn 1s;
-  animation: fadeIn 1s; */
 
-  display: none;
-  top: 50%;
-  left: 50%;
-  height: 18em;
-  width: 30em;
-  margin-top: -9em; /*set to a negative number 1/2 of your height*/
-  margin-left: -15em; /*set to a negative number 1/2 of your width*/
-  border: 1px solid #ccc;
-  background-color: #f3f3f3;
-  position:fixed;
-  z-index: 100;
 }
 
 .post_button{
@@ -121,27 +102,43 @@
 
 
 .cacaButton {
+  margin: 10px;
+  float: left;
   background:none!important;
   color:inherit;
   border:none;
-  padding:0!important;
+  padding:10px!important;
   font: inherit;
   cursor: pointer;
 }
+.cacaUserLikes{
+  background-color: rgba(48, 174, 214, 0.67)!important;
+  border-radius: 10px;
+  transition: transform 1s;
 
-
-
-#floatingLogIn {
-  top: 50%;
-  left: 50%;
-  margin-top: -9em; /*set to a negative number 1/2 of your height*/
-  margin-left: -15em; /*set to a negative number 1/2 of your width*/
-  border: 1px solid #ccc;
-  background-color: #f3f3f3;
-  position:fixed;
-  z-index: 100;
 }
 
+
+.cacaUserLikes:hover{
+  transform: rotateX(360deg) scale(1.1)!important;
+}
+.saving_modal{
+  display:none;
+  position: fixed; /* Stay in place */
+  z-index: 1020; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+}
+.bancala{
+  color: white;
+  font-size: 2em;
+}
 
 
 .iframe_container{
@@ -220,3 +217,48 @@
     }
   }
 /*  Spinner end*/
+/*seccond spiiner saver  */
+.spinner {
+  /* margin: 100px auto; */
+  margin-top:25%;
+  margin-left: 50%;
+  width: 40px;
+  height: 40px;
+  /* position: relative; */
+  /* text-align: center; */
+  -webkit-animation: sk-rotate 2.0s infinite linear;
+  animation: sk-rotate 2.0s infinite linear;
+}
+
+.dot1, .dot2 {
+
+  width: 60%;
+  height: 60%;
+  background-color: #a7a5a5;
+  border-radius: 100%;
+  -webkit-animation: sk-bounce 2.0s infinite ease-in-out;
+  animation: sk-bounce 2.0s infinite ease-in-out;
+}
+
+.dot2 {
+  -webkit-animation-delay: -1.0s;
+  animation-delay: -1.0s;
+}
+
+@-webkit-keyframes sk-rotate { 100% { -webkit-transform: rotate(360deg) }}
+@keyframes sk-rotate { 100% { transform: rotate(360deg); -webkit-transform: rotate(360deg) }}
+
+@-webkit-keyframes sk-bounce {
+  0%, 100% { -webkit-transform: scale(0.0) }
+  50% { -webkit-transform: scale(1.0) }
+}
+
+@keyframes sk-bounce {
+  0%, 100% {
+    transform: scale(0.0);
+    -webkit-transform: scale(0.0);
+  } 50% {
+    transform: scale(1.0);
+    -webkit-transform: scale(1.0);
+  }
+}

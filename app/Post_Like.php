@@ -5,10 +5,13 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\Post;
 use App\User;
+use Illuminate\Support\Facades\Auth;
+
 
 class Post_Like extends Model
 {
-  protected $table='posts_likes';
+  protected $table ='posts_likes';
+
 
   protected $fillable = ['user_id', 'post_id'];
 
@@ -23,5 +26,8 @@ class Post_Like extends Model
  {
    return $this->belongsTo(User::class);
  }
+
+
+
 
 }

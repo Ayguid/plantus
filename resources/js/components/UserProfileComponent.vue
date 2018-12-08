@@ -3,28 +3,52 @@
 
 
 
-    <div class="row justify-content-center">
-      {{this.$root.authuser.name}}
-      <!-- <div v-if="editMode" class="">
-        <form action="/" @submit="formSubmit">
-          <input type="text" name="name" :value="this.$root.authuser.name">&nbsp;
-          <button @click="editMode=false"   class="btn btn-danger"><i class="fas fa-times"></i></button>
-          <button id="submitPost"  type="submit" class="btn btn-primary"><i class="fas fa-check"></i></button>
-        </form>
-      </div>
-      <div v-else class="">
-        {{this.$root.authuser.name}} <i @click="editMode=true" class="far fa-edit"></i>
+    <div v-if="this.$root.authuser" class="">
+      <h3>User Details</h3>
+      <div class="">
+        <strong>Name </strong>{{$root.authuser.name}}<br>
+        <strong>Email </strong>{{$root.authuser.email}}<br>
       </div>
       <br>
-      <br> -->
+
+      <h3>Followers</h3>{{$root.authuser.my_followers.length}}
+      <div class="" v-for="follower in $root.authuser.my_followers">
+        <strong>{{follower.name}}</strong>
+        {{follower.email}}
+      </div>
+      <br>
+      <h3>Following</h3>{{$root.authuser.my_followers.length}}
+      <div class="" v-for="followE in $root.authuser.i_follow">
+        <strong>{{followE.name}}</strong>
+        {{followE.email}}
+      </div>
+      <br>
+
     </div>
 
 
-    <feed-component :user_id="this.$root.authuser.id"></feed-component>
+    <!-- <div class="">
+    {{$root.authuser.name}}
+  </div> -->
+  <!-- <div v-if="editMode" class="">
+  <form action="/" @submit="formSubmit">
+  <input type="text" name="name" :value="$root.authuser.name">&nbsp;
+  <button @click="editMode=false"   class="btn btn-danger"><i class="fas fa-times"></i></button>
+  <button id="submitPost"  type="submit" class="btn btn-primary"><i class="fas fa-check"></i></button>
+</form>
+</div>
+<div v-else class="">
+{{$root.authuser.name}} <i @click="editMode=true" class="far fa-edit"></i>
+</div>
+<br>
+<br> -->
+
+
+<feed-component :user_id="$root.authuser.id"></feed-component>
 
 
 
-  </div>
+</div>
 </template>
 
 <script>
@@ -55,7 +79,7 @@ export default {
   },
 
   mounted() {
-    console.log('Component mounted.');
+    // console.log('Component mounted.');
   }
 }
 </script>

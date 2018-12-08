@@ -27,7 +27,8 @@ const app = new Vue({
     data(){
       return  {
         authuser:window.Laravel.user,
-        authadmin:window.Laravel.admin
+        authadmin:window.Laravel.admin,
+        g_maps_key:process.env.MIX_GOOGLE_MAPS_KEY,
       }
     },
 });

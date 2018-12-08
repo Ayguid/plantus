@@ -15,8 +15,10 @@
         @endif
 
 
-
-
+{{-- {{Auth::user()->id}} --}}
+{{-- @php
+  dd(App\Post::find(255)->userLikes);
+@endphp --}}
   <div class="card">
     <div class="card-header">PLANC Feed</div>
     <div class="card-body">
@@ -47,7 +49,6 @@
 </div>
 </div>
 </div>
-
 
 
 

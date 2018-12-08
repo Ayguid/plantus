@@ -6,8 +6,8 @@ use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Collection;
 // use App\User_Follower;
-
 
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -49,14 +49,15 @@ class User extends Authenticatable implements MustVerifyEmail
   }
 
 
-
-
-
-
-  //functions
-  public function followCount($relation)
+  public function userMainData()
   {
-    return $this->$relation()->count();
+    $this->iFollow;
+    $this->myFollowers;
+    return $this;
+
   }
+
+
+
 
 }

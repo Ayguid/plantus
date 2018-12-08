@@ -5,11 +5,11 @@
   </div> -->
 
 
-  <div id="post_input" class="card post_input">
+  <div class="card">
 
     <div class="" v-if="parent_post">
-      Le estas respondiendo a {{parent_post.user.name}}
-      {{parent_post.id}}
+      Le estas respondiendo a <strong>{{parent_post.user.name}}</strong>
+      ComentPlank: {{parent_post.content}}
     </div>
     <div class="" v-else>
       Estas Plankeandola
@@ -26,6 +26,7 @@
       <input v-if="parent_post" type="text" name="parent_id" :value="parent_post.id" hidden>
       <button id="submitPost"  type="submit" class="btn btn-primary">Submit</button>
     </form>
+
 
 
   </div>
@@ -53,7 +54,7 @@ export default {
 
   methods: {
 
-    onImageChange(e){
+    onImageChange: function(e){
 
       if (parseInt(e.target.files.length) > 3){
         alert("You are only allowed to upload a maximum of 3 files");
@@ -62,8 +63,10 @@ export default {
       }
       this.has_image = e.target.files;
     },
-    formSubmit(e) {
+    formSubmit: function(e) {
       e.preventDefault();
+      var saving_modal = document.getElementById('saving_modal');
+      saving_modal.style.display= 'block';
       var currentObj = this;
       const config = {
         headers: {'content-type': 'multipart/form-data'}
@@ -76,9 +79,12 @@ export default {
       }
       axios.post('api/upload', formData, config)
       .then(function (response) {
+        saving_modal.style.display= 'none';
         if (response.data.success) {
           var post = response.data.success;
           currentObj.$emit('push-post', post);
+          var modal = document.getElementById('form_modal');
+          modal.style.display = "none";
           e.target.reset();
         }
         if (response.data.errors) {
@@ -89,7 +95,7 @@ export default {
         currentObj.output = error;
       });
     },
-    getLocation(){
+    getLocation: function(){
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(this.returnPosition);
       }
@@ -97,7 +103,7 @@ export default {
         console.log('location-error');
       }
     },
-    returnPosition(position) {
+    returnPosition: function(position) {
       this.location = JSON.stringify({
         latitude:position.coords.latitude,
         longitude:position.coords.longitude
@@ -107,7 +113,7 @@ export default {
 
 
   mounted(){
-    this.getLocation();
+    // this.getLocation();
   }
 
 }
