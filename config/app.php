@@ -65,7 +65,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'America/Argentina/Buenos_Aires',
 
     /*
     |--------------------------------------------------------------------------
@@ -154,6 +154,7 @@ return [
         //Nuestros
 
 
+
         /*
          * Application Service Providers...
          */
@@ -213,6 +214,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         //nuestros
+
 
 
     ],

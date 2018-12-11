@@ -1,17 +1,12 @@
 <?php
-
 namespace App\Traits;
-
 use App\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Post;
 use Illuminate\Support\Facades\Auth;
-
 trait ImageHelper
 {
-
-
   public function saveImages($request, $who, $form_key, $where)
   {
     foreach ($request->file($form_key) as $key => $image)
@@ -30,9 +25,6 @@ trait ImageHelper
     }
     return $status;
   }
-
-
-
   public function destroyImages($who, $where)
   {
     foreach ($who->images as $image)
@@ -47,13 +39,4 @@ trait ImageHelper
     }
     return $status;
   }
-
-
-
-
-
-
-
-
-
 }

@@ -38,7 +38,7 @@
     <post-component v-for="(post, index)  in posts"
     :key="post.id" :post="post">
   </post-component>
-  <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+  <div id="ellipsis" class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
 
 
 </div>
@@ -57,7 +57,7 @@ export default {
     return  {
       parent_post:'',
       posts: [],
-      post_qty_limit:10,
+      post_qty_limit:5,
     }
   },
 
@@ -87,21 +87,50 @@ export default {
         this.posts = response.data;
       });
     },
+
+
+
+
+
     handleScroll: function(){
-      var d = document.documentElement;
-      var offset = d.scrollTop + window.innerHeight;
-      var height = d.offsetHeight;
-      console.log('offset = ' + offset);console.log('height = ' + height);console.log('d.scrollTop = ' + d.scrollTop);
-      if (offset === height) {
-        console.log('request');
-        this.post_qty_limit += 10;
+      var ellipsis = document.getElementById('ellipsis');
+      if (this.elementInViewport(ellipsis)) {
         this.getPosts();
+        this.post_qty_limit += 5;
+        this.wait(1000);
+
       }
-      if (d.scrollTop == 0) {
-        this.getPosts();
+      // console.log(this.elementInViewport(ellipsis));
+    },
+    wait: function(ms){
+      var start = new Date().getTime();
+      var end = start;
+      while(end < start + ms) {
+        end = new Date().getTime();
+      }
+    },
+    elementInViewport: function(el) {
+      var top = el.offsetTop;
+      var left = el.offsetLeft;
+      var width = el.offsetWidth;
+      var height = el.offsetHeight;
+
+      while(el.offsetParent) {
+        el = el.offsetParent;
+        top += el.offsetTop;
+        left += el.offsetLeft;
       }
 
+      return (
+        top < (window.pageYOffset + window.innerHeight) &&
+        left < (window.pageXOffset + window.innerWidth) &&
+        (top + height) > window.pageYOffset &&
+        (left + width) > window.pageXOffset
+      );
     },
+
+
+
     pushPost: function(post){
       this.parent_post = post;
       this.displayForm();
@@ -121,7 +150,7 @@ export default {
 
 
 
-  created: function () {
+  created() {
     this.getPosts();
     window.addEventListener('scroll', this.handleScroll);
   },
@@ -130,5 +159,6 @@ export default {
     EventBus.$on('push-post', this.pushPost);
     EventBus.$on('resizeImage', this.resizeImage);
   },
+
 }
 </script>

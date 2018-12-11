@@ -12,6 +12,7 @@
    <a href="#">{{post.user.name}}</a>
 
    <br>
+
    <img  @click="emitImage($event.target)" class="post_image" v-for='image in post.images'
    :src="'storage/uploads/PostMedia/'+image.image_path" alt="">
    <br>
@@ -132,11 +133,10 @@ export default {
 
   },
 
-  computed:{
+  created(){
+    this.likedByUser();
   },
   mounted(){
-      this.likedByUser();
-
   },
 }
 </script>
